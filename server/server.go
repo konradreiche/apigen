@@ -3,39 +3,36 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 
 	"github.com/konradreiche/apigen/api"
 )
 
-func Serve() {
-	http.HandleFunc("/price", GetPriceHandleFunc)
+type Server struct {
+	api api.API
+}
+
+func NewServer(api api.API) *Server {
+	return &Server{
+		api: api,
+	}
+}
+
+func (s *Server) Serve() {
+	http.HandleFunc("/price", s.GetPriceHandleFunc)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func GetPriceHandleFunc(w http.ResponseWriter, r *http.Request) {
-	enc := json.NewEncoder(w)
-
-	var req api.GetPriceRequest
-	dec := json.NewDecoder(r.Body)
-	err := dec.Decode(&req)
-	if err != nil {
-		EncodeError(enc, err)
-		return
-	}
-	resp, err := api.GetPrice(context.Background(), req)
-	if err != nil {
-		EncodeError(enc, err)
-		return
-	}
-	enc.Encode(resp)
-}
-
 type Error struct {
-	Message string `json:"error"`
+	Message string `json:"error,omitempty"`
 }
 
-func EncodeError(enc *json.Encoder, err error) {
-	enc.Encode(&Error{Message: err.Error()})
+func Encode(ctx context.Context, w io.Writer, data interface{}, err error) {
+	encoder := json.NewEncoder(w)
+	if err != nil {
+		encoder.Encode(&Error{Message: err.Error()})
+	}
+	encoder.Encode(data)
 }

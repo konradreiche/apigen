@@ -9,10 +9,21 @@ import (
 	"github.com/konradreiche/apigen/coinapi"
 )
 
+type API interface {
+	GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error)
+}
+
+type api struct {
+}
+
+func NewAPI() API {
+	return &api{}
+}
+
 const BaseURL = "https://rest.coinapi.io/v1"
 
 type Error struct {
-	Error string `json:"error"`
+	Error string `json:"error,omitempty"`
 }
 
 type GetPriceRequest struct {
@@ -25,7 +36,7 @@ type GetPriceResponse struct {
 	Error
 }
 
-func GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
+func (a *api) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
 	client := &http.Client{}
 	endpoint := fmt.Sprintf("%s/exchangerate/%s/%s", BaseURL, req.AssetBase, req.AssetQuote)
 	httpReq, err := http.NewRequest(http.MethodGet, endpoint, nil)
