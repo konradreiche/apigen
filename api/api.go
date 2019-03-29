@@ -1,3 +1,4 @@
+//go:generate go run ../cmd/apigen.go
 package api
 
 import (
@@ -22,18 +23,14 @@ func NewAPI() API {
 
 const BaseURL = "https://rest.coinapi.io/v1"
 
-type Error struct {
-	Error string `json:"error,omitempty"`
-}
-
 type GetPriceRequest struct {
 	AssetBase  string `json:"assetBase"`
 	AssetQuote string `json:"assetQuote"`
 }
 
 type GetPriceResponse struct {
-	Rate float64 `json:"rate,omitempty"`
-	Error
+	Rate  float64 `json:"rate,omitempty"`
+	Error string  `json:"error,omitempty"`
 }
 
 func (a *api) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
@@ -54,6 +51,6 @@ func (a *api) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceRespo
 	}
 	return &GetPriceResponse{
 		Rate:  coinResp.Rate,
-		Error: Error{Error: coinResp.Error},
+		Error: coinResp.Error,
 	}, nil
 }
