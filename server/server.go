@@ -3,10 +3,12 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/konradreiche/apigen/api"
 )
 
@@ -21,8 +23,9 @@ func NewServer(api api.API) *Server {
 }
 
 func (s *Server) Serve() {
-	http.HandleFunc("/price", s.GetPriceHandleFunc)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	router := mux.NewRouter()
+	router.HandleFunc(api.GetPriceEndpoint, s.GetPriceHandleFunc).Methods("GET")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 type Error struct {
@@ -32,7 +35,9 @@ type Error struct {
 func Encode(ctx context.Context, w io.Writer, data interface{}, err error) {
 	encoder := json.NewEncoder(w)
 	if err != nil {
+		fmt.Println(err)
 		encoder.Encode(&Error{Message: err.Error()})
+		return
 	}
 	encoder.Encode(data)
 }

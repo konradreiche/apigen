@@ -6,32 +6,24 @@
 package client
 
 {{range .Endpoints}}
-func (c *Client) {{.Name}}(ctx context.Context, req rpc.{{.Name}}Request) (*rpc.{{.Name}}Response, error) {
-	m := NewMessage(rpc.{{.Name}})
-	err := m.EncodePayload(req.Params)
+  func (c *Client) {{.Name}}(ctx context.Context, req api.{{.Name}}Request) (*api.{{.Name}}Response, error) {
+  r, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.{{.Name}}Endpoint)), nil)
 	if err != nil {
 		return nil, err
 	}
-	responser := c.registerRequest(m.RequestID)
-	defer c.unregisterRequest(m.RequestID)
-	err = c.w.WriteJSON(m)
+	resp, err := c.conn.Do(r)
 	if err != nil {
 		return nil, err
 	}
-	var resp string
-	select {
-	case resp = <-responser:
-	case <-time.After(c.config.Timeout):
-		return nil, ErrTimeout
-	case <-ctx.Done():
-		return nil, ctx.Err()
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
 	}
-	m, err = c.DecodeGenericResponse(resp)
+  var result api.{{.Name}}Response
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
 	if err != nil {
 		return nil, err
 	}
-	var result rpc.{{.Name}}Response
-	err = json.Unmarshal(m.Data, &result)
 	return &result, err
 }
 {{end}}

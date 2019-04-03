@@ -4,10 +4,15 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/konradreiche/apigen/coinapi"
+)
+
+const (
+	GetPriceEndpoint = "/price/{assetBase}/{assetQuote}"
 )
 
 type API interface {
@@ -26,6 +31,16 @@ const BaseURL = "https://rest.coinapi.io/v1"
 type GetPriceRequest struct {
 	AssetBase  string `json:"assetBase"`
 	AssetQuote string `json:"assetQuote"`
+}
+
+func (r GetPriceRequest) Validate() error {
+	if r.AssetBase == "" {
+		return errors.New("assetBase cannot be null")
+	}
+	if r.AssetQuote == "" {
+		return errors.New("assetQuote cannot be null")
+	}
+	return nil
 }
 
 type GetPriceResponse struct {

@@ -123,23 +123,24 @@ func (p *Parser) Parse() error {
 }
 
 func (p *Parser) generate() error {
-	err := p.generateCode(p.clientTemplate, "client/endpoints.go")
+	err := p.generateCode(p.clientTemplate, "../client/endpoints.go")
 	if err != nil {
 		return err
 	}
-	err = p.generateCode(p.serverTemplate, "server/endpoints.go")
+	err = p.generateCode(p.serverTemplate, "../server/endpoints.go")
 	if err != nil {
 		return err
 	}
-	err = p.generateCode(p.loggingTemplate, "logging.go")
-	if err != nil {
-		return err
-	}
-	err = p.generateCode(p.instrumentationTemplate, "instrumentation.go")
-	if err != nil {
-		return err
-	}
-	return p.generateCode(p.recorderTemplate, "recorder.go")
+	return nil
+	//	err = p.generateCode(p.loggingTemplate, "logging.go")
+	//	if err != nil {
+	//		return err
+	//	}
+	//	err = p.generateCode(p.instrumentationTemplate, "instrumentation.go")
+	//	if err != nil {
+	//		return err
+	//	}
+	//	return p.generateCode(p.recorderTemplate, "recorder.go")
 }
 
 func (p *Parser) generateCode(tmpl *template.Template, fn string) error {
@@ -156,8 +157,8 @@ func (p *Parser) generateCode(tmpl *template.Template, fn string) error {
 }
 
 func (p *Parser) parseType(st *ast.TypeSpec) error {
-	if strings.HasSuffix(st.Name.Name, "Params") {
-		endpoint := strings.Replace(st.Name.Name, "Params", "", -1)
+	if strings.HasSuffix(st.Name.Name, "Request") {
+		endpoint := strings.Replace(st.Name.Name, "Request", "", -1)
 		p.addParameter(endpoint, st.Type.(*ast.StructType))
 	}
 	if strings.HasSuffix(st.Name.Name, "Response") {
@@ -252,7 +253,7 @@ func (p *Parser) parseFunction(fd *ast.FuncDecl) {
 			name := fd.Name.Name
 			description := fd.Doc.Text()
 			firstChar := string(name[0])
-			if ident.Name == "rpc" && firstChar == strings.ToUpper(firstChar) {
+			if ident.Name == "api" && firstChar == strings.ToUpper(firstChar) {
 				p.AddEndpoint(name, description)
 			}
 		}
