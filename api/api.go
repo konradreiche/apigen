@@ -12,11 +12,14 @@ import (
 )
 
 const (
-	GetPriceEndpoint = "/price/{assetBase}/{assetQuote}"
+	GetPriceEndpoint     = "/price/{assetBase}/{assetQuote}"
+	GetExchangesEndpoint = "/exchanges"
+	GetAssetsEndpoint    = "/assets"
 )
 
 type API interface {
 	GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error)
+	//GetExchanges(ctx context.Context, req GetExchangesRequest) (*GetExchangesResponse, error)
 }
 
 type api struct {
@@ -69,3 +72,17 @@ func (a *api) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceRespo
 		Error: coinResp.Error,
 	}, nil
 }
+
+// type GetExchangesRequest struct {
+// }
+//
+// func (r GetExchangesRequest) Validate() error {
+// 	return nil
+// }
+//
+// type GetExchangesResponse struct {
+// }
+//
+// func (a *api) GetExchanges(ctx context.Context, req GetExchangesRequest) (*GetExchangesResponse, error) {
+// 	return nil, nil
+// }

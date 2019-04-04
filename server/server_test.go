@@ -8,10 +8,11 @@ import (
 
 	"github.com/konradreiche/apigen/api"
 	"github.com/konradreiche/apigen/client"
+	"github.com/sirupsen/logrus"
 )
 
 func TestServer(t *testing.T) {
-	server := NewServer(api.NewAPI())
+	server := NewServer(api.NewLoggingMiddleware(api.NewAPI(), logrus.New()))
 	go func() {
 		server.Serve()
 	}()

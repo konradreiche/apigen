@@ -6,7 +6,6 @@
 package server
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -34,7 +33,7 @@ func (s *Server) GetPriceHandleFunc(w http.ResponseWriter, r *http.Request) {
 		Encode(nil, w, nil, err)
 		return
 	}
-	resp, err := s.api.GetPrice(context.Background(), req)
+	resp, err := s.api.GetPrice(r.Context(), req)
 	if err != nil {
 		Encode(nil, w, nil, err)
 		return
