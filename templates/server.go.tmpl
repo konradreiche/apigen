@@ -26,7 +26,7 @@ func (s *Server) {{.Name}}HandleFunc(w http.ResponseWriter, r *http.Request) {
     Encode(nil, w, nil, err)
     return
   }
-  resp, err := s.api.{{.Name}}(context.Background(), req)
+  resp, err := s.api.{{.Name}}(r.Context(), req)
 	if err != nil {
 		Encode(nil, w, nil, err)
     return

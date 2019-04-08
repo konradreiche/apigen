@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -36,7 +35,6 @@ type Error struct {
 func Encode(ctx context.Context, w io.Writer, data interface{}, err error) {
 	encoder := json.NewEncoder(w)
 	if err != nil {
-		fmt.Println(err)
 		encoder.Encode(&Error{Message: err.Error()})
 		return
 	}

@@ -111,6 +111,7 @@ func (p *Parser) Parse() error {
 	ast.Inspect(p.file, func(n ast.Node) bool {
 		switch x := n.(type) {
 		case *ast.TypeSpec:
+			fmt.Println(x)
 			if err := p.parseType(x); err != nil {
 				return false
 			}
