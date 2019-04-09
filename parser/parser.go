@@ -132,15 +132,15 @@ func (p *Parser) generate() error {
 	if err != nil {
 		return err
 	}
+	err = p.generateCode(p.loggingTemplate, "logging.go")
+	if err != nil {
+		return err
+	}
+	err = p.generateCode(p.instrumentationTemplate, "instrumentation.go")
+	if err != nil {
+		return err
+	}
 	return nil
-	//	err = p.generateCode(p.loggingTemplate, "logging.go")
-	//	if err != nil {
-	//		return err
-	//	}
-	//	err = p.generateCode(p.instrumentationTemplate, "instrumentation.go")
-	//	if err != nil {
-	//		return err
-	//	}
 	//	return p.generateCode(p.recorderTemplate, "recorder.go")
 }
 
