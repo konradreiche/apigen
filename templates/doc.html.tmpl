@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href = "style.css" />
+  <link rel="stylesheet" href="prism.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  <title></title>
+</head>
+<body>
+  <nav>
+    <div class="header">
+      <div class="brand">
+        <img class="logo" src="logo.png" />
+        <img src="name.png" />
+      </div>
+      <div class="title">
+        <a href="index.html">API Reference</a>
+      </div>
+    </div>
+  </nav>
+  <div class="wrapper">
+    <div class="flex-container">
+      <aside>
+        <h2>API Methods</h2>
+        <ul>{{range .Parser.Endpoints}}
+          <li><a class="link {{.Name}}" href="#{{.Name}}" data-target="{{.Name}}">{{unfold .Name}}</a></li>{{end}}
+        </ul>
+      </aside>
+      <main class="general selected">
+        <section class="description">
+          <h1>Introduction</h1>
+          <p>October uses a WebSocket API on the backend to communicate with mobile and web clients. WebSockets give us a bi-directional communication link making it easier to push messages directly to the client for updating the interface in real-time.</p>
+          <h2>Conventions</h2>
+          <p>Messages are send over the WebSocket connection in the form of JSON objects.</p>
+          <ul>
+            <li>Every message send to the API has to correspond to an endpoint.</li>
+            <li>Endpoints are identified via the <code>rpc</code> field.</li>
+            <li>Requests are uniquely identified by generating a UUID version 4 and setting the <code>requestID</code> field.</li>
+            <li>Responses will carry an <code>ack</code> field set to the previously generated UUID.</li>
+            <li>Payload for request or responses go into <code>data</code>.</li>
+          </ul>
+          <h2>Example</h2>
+          <pre><code class="language-json">// Request
+{
+  "rpc": "auth",
+  "requestID": "a8372aaf-ae3d-4ccb-9ab7-054c31d0ec52",
+  "data": {
+    "username": "chad",
+    "password": "secret"
+  }
+}
+
+// Response
+{
+  "rpc": "auth",
+  "ack": "a8372aaf-ae3d-4ccb-9ab7-054c31d0ec52",
+  "data": {
+    "user": {
+      "nodeId": "bb100fc4-29b6-4e2f-b19c-549687b27125",
+      "displayname": "Chad Unicorn",
+      "firstName": "Chad",
+      "lastName": "Unicorn",
+      "profileimg_path": "https://s3-us-west-2.amazonaws.com/assets.october.news/profiles/57f1c2fe-32a1-4b86-ab79-cc3c3e1425ef.jpeg",
+      "cover_image_path": "https://s3-us-west-2.amazonaws.com/assets.october.news/profiles/covers/4bc4db4e-6a0f-49b8-94c0-213c00ca7d47.jpeg",
+      "email": "chad@october.news",
+    },
+    "session": {
+      "id": "aa5706e4-baf8-4011-aad0-6d8d55730b8b",
+      "userID": "bb100fc4-29b6-4e2f-b19c-549687b27125"
+    }
+  }
+}</code></pre>
+          <h2>Authentication & Security</h2>
+          <p>We use stateful connections. When someone connects to the endpoint the connection is considered unauthenticated. Once an authentication request is send and it was successful, the connection becomes authenticated without the need to reconnect. If a client has cached the session ID of a user it can connect append the session ID as <code>sessionID=[id]</code> and the connection will be authenticated immediately.</p>
+        </section>
+      </main>
+      {{range .Parser.Endpoints}}
+        <main class="endpoint {{.Name}}">
+          <section class="description">
+            <h1>{{unfold .Name}}</h1>
+            <p>{{.Description}}</p>
+          </section>
+          {{if .Parameters}}
+          <section class="parameter">
+            <h2>Parameters</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{range .Parameters}}
+                <tr>
+                  <td><code>{{.Tag}}</code></td>
+                  <td><code>{{.Type}}</code></td>
+                  <td>{{.Description}}</td>
+                </tr>
+              {{end}}
+              </tbody>
+            </table>
+          </section>
+          {{end}}
+          {{if .Response}}
+          <section class="response">
+            <h2>Response</h2>
+            <p>Type {{.Response.Type}}</p>
+            {{if .Response.Fields}}
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{range .Response.Fields}}
+                <tr>
+                  <td><code>{{.Field}}</code></td>
+                  <td><code>{{.Type}}</code></td>
+                  <td>{{.Description}}</td>
+                </tr>
+              {{end}}
+              </tbody>
+            </table>
+            {{end}}
+          </section>
+          {{end}}
+          {{range index $.Examples .Name}}
+            <section class="example">
+              <h2>Request Example</h2>
+              <p>{{.Request.Description}}</p>
+              <pre><code class="language-json">{{json .Request}}</code></pre>
+              <h2>Response Example</h2>
+              <pre><code class="language-json">{{json .Response}}</code></pre>
+            </section>
+          {{end}}
+        </main>
+      {{end}}
+    </div>
+  </div>
+  <script src="prism.js"></script>
+  <script>
+    const hash = location.hash.split('#')[1]
+    if (hash !== undefined) {
+      const general = document.querySelector('main.selected')
+      general.classList.toggle('selected')
+
+      const current = document.querySelector(`main.${hash}`)
+      current.classList.toggle("selected")
+
+      const link = document.querySelector(`aside a.${hash}`)
+      link.classList.toggle("selected")
+    }
+
+    const endpoints = document.getElementsByClassName('endpoint')
+    const mains = document.getElementsByTagName('main')
+    const links = document.getElementsByClassName('link')
+
+    for (i = 0; i < links.length; i++) {
+      links[i].onclick = function(event) {
+        for (j = 0; j < links.length; j++) {
+          links[j].setAttribute("class", "link")
+        }
+        event.target.setAttribute("class", "link selected")
+        id = event.target.dataset.target
+        const endpoint = document.getElementsByClassName(`endpoint ${id}`)
+
+        for (j = 0; j < mains.length; j++) {
+          mains[j].style.display = "none"
+        }
+        endpoint[0].style.display = "block"
+      }
+    }
+  </script>
+</body>
+</html>

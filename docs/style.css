@@ -1,0 +1,139 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #dfe3e8;
+  color: #454952;
+  margin: 0;
+}
+
+nav {
+  position: fixed;
+  background-color: #fff;
+  padding: 1rem;
+  width: 100%;
+  top: 0;
+  box-shadow: 0 10px 40px 0 rgba(62,57,107,0.07), 0 2px 9px 0 rgba(62,57,107,0.06);
+  display: flex;
+  justify-content: space-around;
+}
+
+.header {
+  display: flex;
+}
+
+.brand {
+  max-width: 230px;
+  min-width: 230px;
+  align-items: center;
+}
+
+.title {
+  max-width: 840px;
+  min-width: 840px;
+  font-size: 1.5rem;
+}
+
+img {
+  height: 30px;
+}
+
+.logo {
+  margin-right: 12px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 4rem;
+}
+
+.flex-container {
+  display: flex;
+  margin-top: 2rem;
+}
+
+section {
+  background-color: #fff;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-weight: 300;
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 18px;
+}
+
+pre {
+  border-radius: 5px;
+}
+
+table {
+  margin-top: 2rem;
+  border-spacing: 1.5rem;
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+table tbody {
+  vertical-align: top;
+}
+
+table th {
+  text-align: left;
+  font-weight: 300;
+  height: 10px;
+  border-right: 1.5rem solid transparent;
+  border-bottom: 0.5rem solid transparent;
+}
+
+table td {
+  font-size: 15px;
+  border-right: 1.5rem solid transparent;
+  border-bottom: 0.5rem solid transparent;
+}
+
+aside {
+ width: 230px;
+ min-width: 230px;
+}
+
+main {
+  min-width: 840px;
+  max-width: 840px;
+}
+
+aside > h2 {
+  font-size: 1.2rem;
+  color: rgba(69,73,82,0.4);
+}
+
+aside ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul > li {
+  padding: 8px 0 8px 0;
+}
+
+a {
+  text-decoration: none;
+  color: #454952;
+}
+
+main {
+  display: none;
+}
+
+main.selected {
+  display: block;
+}
+
+a.selected {
+  color: #08b8fb;
+}
