@@ -10,6 +10,7 @@ import (
 	"github.com/DataDog/datadog-go/statsd"
 	"github.com/konradreiche/apigen/api"
 	"github.com/konradreiche/apigen/client"
+	"github.com/konradreiche/apigen/store"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,8 +21,15 @@ func TestServer(t *testing.T) {
 		panic(err)
 	}
 
+	store, err := store.NewStore()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(store)
+
 	a := api.NewAPI()
 	a = api.NewLoggingMiddleware(a, logger)
+	a = api.NewRecordingMiddleware(a, store, logger)
 	a = api.NewInstrumentingMiddleware(a, statsdClient, logger)
 	server := NewServer(a)
 	go func() {

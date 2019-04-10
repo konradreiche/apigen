@@ -140,8 +140,7 @@ func (p *Parser) generate() error {
 	if err != nil {
 		return err
 	}
-	return nil
-	//	return p.generateCode(p.recorderTemplate, "recorder.go")
+	return p.generateCode(p.recorderTemplate, "recorder.go")
 }
 
 func (p *Parser) generateCode(tmpl *template.Template, fn string) error {
