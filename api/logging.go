@@ -23,11 +23,11 @@ func NewLoggingMiddleware(api API, log *logrus.Logger) API {
 	}
 }
 
-func (l *loggingMiddleware) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
+func (l *loggingMiddleware) Login(ctx context.Context, req LoginRequest) (*LoginResponse, error) {
 	var err error
 	defer func() {
 		fields := logrus.Fields{
-			"method":     "GetPrice",
+			"method":     "Login",
 			"user_agent": ctx.Value("userAgent"),
 		}
 		if err == nil {
@@ -37,6 +37,42 @@ func (l *loggingMiddleware) GetPrice(ctx context.Context, req GetPriceRequest) (
 			l.log.WithFields(fields).Error("request failed")
 		}
 	}()
-	resp, err := l.api.GetPrice(ctx, req)
+	resp, err := l.api.Login(ctx, req)
+	return resp, err
+}
+
+func (l *loggingMiddleware) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error) {
+	var err error
+	defer func() {
+		fields := logrus.Fields{
+			"method":     "CreatePost",
+			"user_agent": ctx.Value("userAgent"),
+		}
+		if err == nil {
+			l.log.WithFields(fields).Info("request")
+		} else {
+			fields["error"] = err
+			l.log.WithFields(fields).Error("request failed")
+		}
+	}()
+	resp, err := l.api.CreatePost(ctx, req)
+	return resp, err
+}
+
+func (l *loggingMiddleware) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error) {
+	var err error
+	defer func() {
+		fields := logrus.Fields{
+			"method":     "GetFeed",
+			"user_agent": ctx.Value("userAgent"),
+		}
+		if err == nil {
+			l.log.WithFields(fields).Info("request")
+		} else {
+			fields["error"] = err
+			l.log.WithFields(fields).Error("request failed")
+		}
+	}()
+	resp, err := l.api.GetFeed(ctx, req)
 	return resp, err
 }

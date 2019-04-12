@@ -15,8 +15,8 @@ import (
 	"github.com/konradreiche/apigen/api"
 )
 
-func (c *Client) GetPrice(ctx context.Context, req api.GetPriceRequest) (*api.GetPriceResponse, error) {
-	r, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.GetPriceEndpoint)), nil)
+func (c *Client) Login(ctx context.Context, req api.LoginRequest) (*api.LoginResponse, error) {
+	r, err := http.NewRequest(req.Method(), fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.LoginEndpoint)), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,49 @@ func (c *Client) GetPrice(ctx context.Context, req api.GetPriceRequest) (*api.Ge
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New(resp.Status)
 	}
-	var result api.GetPriceResponse
+	var result api.LoginResponse
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+	return &result, err
+}
+
+func (c *Client) CreatePost(ctx context.Context, req api.CreatePostRequest) (*api.CreatePostResponse, error) {
+	r, err := http.NewRequest(req.Method(), fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.CreatePostEndpoint)), nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.conn.Do(r)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
+	}
+	var result api.CreatePostResponse
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+	return &result, err
+}
+
+func (c *Client) GetFeed(ctx context.Context, req api.GetFeedRequest) (*api.GetFeedResponse, error) {
+	r, err := http.NewRequest(req.Method(), fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.GetFeedEndpoint)), nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.conn.Do(r)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
+	}
+	var result api.GetFeedResponse
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&result)
 	if err != nil {

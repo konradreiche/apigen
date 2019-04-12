@@ -63,7 +63,7 @@ func (e *Example) JSON() (string, error) {
 	m := protocol.NewMessage(e.RPC)
 	m.RPC = toLower(e.RPC)
 
-	if e.Kind == "Params" {
+	if e.Kind == "Request" {
 		m.RequestID = e.RequestID
 	} else {
 		m.RequestID = globalid.Nil
@@ -114,7 +114,7 @@ func (dg *DocGenerator) ParseExamples() error {
 			}
 
 			name := vs.Names[0].String()
-			re := regexp.MustCompile(`(.*)(Params|Response)Example\d`)
+			re := regexp.MustCompile(`(.*)(Response)Example\d`)
 			match := re.FindStringSubmatch(name)
 			if len(match) == 0 {
 				return true
@@ -125,7 +125,7 @@ func (dg *DocGenerator) ParseExamples() error {
 
 			example.RPC = endpoint
 			example.Payload = examples[name]
-			if match[2] == "Params" {
+			if match[2] == "Request" {
 				examplePair.Request = example
 				example.RequestID = examplePair.RequestID
 				if examplePair.Request != nil && examplePair.Response != nil {

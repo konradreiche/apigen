@@ -28,11 +28,11 @@ func NewRecordingMiddleware(a API, store *store.Store, log *logrus.Logger) API {
 	}
 }
 
-func (rm *recordingMiddleware) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
+func (rm *recordingMiddleware) Login(ctx context.Context, req LoginRequest) (*LoginResponse, error) {
 	var err error
 	defer func() {
 		activity := &model.Activity{
-			Method: "GetPrice",
+			Method: "Login",
 		}
 		activity.Data, err = json.Marshal(req)
 		if err != nil {
@@ -44,6 +44,46 @@ func (rm *recordingMiddleware) GetPrice(ctx context.Context, req GetPriceRequest
 			rm.log.Error(err)
 		}
 	}()
-	response, err := rm.a.GetPrice(ctx, req)
+	response, err := rm.a.Login(ctx, req)
+	return response, err
+}
+
+func (rm *recordingMiddleware) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error) {
+	var err error
+	defer func() {
+		activity := &model.Activity{
+			Method: "CreatePost",
+		}
+		activity.Data, err = json.Marshal(req)
+		if err != nil {
+			rm.log.Error(err)
+			return
+		}
+		err = rm.store.SaveActivity(activity)
+		if err != nil {
+			rm.log.Error(err)
+		}
+	}()
+	response, err := rm.a.CreatePost(ctx, req)
+	return response, err
+}
+
+func (rm *recordingMiddleware) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error) {
+	var err error
+	defer func() {
+		activity := &model.Activity{
+			Method: "GetFeed",
+		}
+		activity.Data, err = json.Marshal(req)
+		if err != nil {
+			rm.log.Error(err)
+			return
+		}
+		err = rm.store.SaveActivity(activity)
+		if err != nil {
+			rm.log.Error(err)
+		}
+	}()
+	response, err := rm.a.GetFeed(ctx, req)
 	return response, err
 }

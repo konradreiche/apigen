@@ -4,18 +4,22 @@ package api
 
 import (
 	"context"
-	"errors"
+	"math/rand"
+	"net/http"
+
+	"github.com/gobuffalo/uuid"
 )
 
 const (
-	GetPriceEndpoint     = "/price/{assetBase}/{assetQuote}"
-	GetExchangesEndpoint = "/exchanges"
-	GetAssetsEndpoint    = "/assets"
+	LoginEndpoint      = "/login"
+	CreatePostEndpoint = "/post"
+	GetFeedEndpoint    = "/feed"
 )
 
 type API interface {
-	GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error)
-	//GetExchanges(ctx context.Context, req GetExchangesRequest) (*GetExchangesResponse, error)
+	Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
+	CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error)
+	GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error)
 }
 
 type api struct {
@@ -25,63 +29,64 @@ func NewAPI() API {
 	return &api{}
 }
 
-const BaseURL = "https://rest.coinapi.io/v1"
-
-type GetPriceRequest struct {
-	AssetBase  string `json:"assetBase"`
-	AssetQuote string `json:"assetQuote"`
+type LoginRequest struct {
+	// Username is used for logging the user in.
+	Username string `json:"username"`
+	// Password is used for logging the user in.
+	Password string `json:"password"`
 }
 
-func (r GetPriceRequest) Validate() error {
-	if r.AssetBase == "" {
-		return errors.New("assetBase cannot be null")
+func (r *LoginRequest) Method() string {
+	return http.MethodPost
+}
+
+type LoginResponse struct {
+	SessionID uuid.UUID `json:"id"`
+}
+
+// Login authenticates a user and generates a session ID returned to the client.
+func (a *api) Login(ctx context.Context, req LoginRequest) (*LoginResponse, error) {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
 	}
-	if r.AssetQuote == "" {
-		return errors.New("assetQuote cannot be null")
-	}
-	return nil
-}
-
-type GetPriceResponse struct {
-	Rate  float64 `json:"rate,omitempty"`
-	Error string  `json:"error,omitempty"`
-}
-
-func (a *api) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
-	//	client := &http.Client{}
-	//	endpoint := fmt.Sprintf("%s/exchangerate/%s/%s", BaseURL, req.AssetBase, req.AssetQuote)
-	//	httpReq, err := http.NewRequest(http.MethodGet, endpoint, nil)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	httpReq.Header.Set("X-CoinAPI-Key", "C93B0915-91FF-4CD3-B07F-BA32376F900F")
-	//	r, _ := client.Do(httpReq)
-	//
-	//	var coinResp coinapi.ExchangeRate
-	//	dec := json.NewDecoder(r.Body)
-	//	err = dec.Decode(&coinResp)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	return &GetPriceResponse{
-	//		Rate:  coinResp.Rate,
-	//		Error: coinResp.Error,
-	//	}, nil
-	return &GetPriceResponse{
-		Rate: 1.0,
+	return &LoginResponse{
+		SessionID: id,
 	}, nil
 }
 
-// type GetExchangesRequest struct {
-// }
-//
-// func (r GetExchangesRequest) Validate() error {
-// 	return nil
-// }
-//
-// type GetExchangesResponse struct {
-// }
-//
-// func (a *api) GetExchanges(ctx context.Context, req GetExchangesRequest) (*GetExchangesResponse, error) {
-// 	return nil, nil
-// }
+type CreatePostRequest struct {
+	Body string `json:"body"`
+	URL  string `json:"url"`
+}
+
+func (r *CreatePostRequest) Method() string {
+	return http.MethodPost
+}
+
+type CreatePostResponse struct {
+	ID int `json:"id"`
+}
+
+func (a *api) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error) {
+	return &CreatePostResponse{
+		ID: rand.Int(),
+	}, nil
+}
+
+type GetFeedRequest struct {
+}
+
+func (r *GetFeedRequest) Method() string {
+	return http.MethodGet
+}
+
+type GetFeedResponse struct {
+	Posts []string `json:"posts"`
+}
+
+func (a *api) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error) {
+	return &GetFeedResponse{
+		Posts: []string{},
+	}, nil
+}

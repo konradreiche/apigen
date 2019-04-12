@@ -7,7 +7,7 @@ package client
 
 {{range .Endpoints}}
   func (c *Client) {{.Name}}(ctx context.Context, req api.{{.Name}}Request) (*api.{{.Name}}Response, error) {
-  r, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.{{.Name}}Endpoint)), nil)
+  r, err := http.NewRequest(req.Method(), fmt.Sprintf("%s/%s", c.endpoint, EncodeVars(req, api.{{.Name}}Endpoint)), nil)
 	if err != nil {
 		return nil, err
 	}

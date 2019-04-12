@@ -24,7 +24,9 @@
       <aside>
         <h2>API Methods</h2>
         <ul>
-          <li><a class="link GetPrice" href="#GetPrice" data-target="GetPrice">Get Price</a></li>
+          <li><a class="link Login" href="#Login" data-target="Login">Login</a></li>
+          <li><a class="link CreatePost" href="#CreatePost" data-target="CreatePost">Create Post</a></li>
+          <li><a class="link GetFeed" href="#GetFeed" data-target="GetFeed">Get Feed</a></li>
         </ul>
       </aside>
       <main class="general selected">
@@ -76,9 +78,75 @@
         </section>
       </main>
       
-        <main class="endpoint GetPrice">
+        <main class="endpoint Login">
           <section class="description">
-            <h1>Get Price</h1>
+            <h1>Login</h1>
+            <p>Authenticates a user and generates a session ID returned to the client.
+</p>
+          </section>
+          
+          <section class="parameter">
+            <h2>Parameters</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><code>username</code></td>
+                  <td><code>string</code></td>
+                  <td>Username is used for logging the user in.
+</td>
+                </tr>
+              
+                <tr>
+                  <td><code>password</code></td>
+                  <td><code>string</code></td>
+                  <td>Password is used for logging the user in.
+</td>
+                </tr>
+              
+              </tbody>
+            </table>
+          </section>
+          
+          
+          <section class="response">
+            <h2>Response</h2>
+            <p>Type Object</p>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><code>id</code></td>
+                  <td><code>uuid.UUID</code></td>
+                  <td></td>
+                </tr>
+              
+              </tbody>
+            </table>
+            
+          </section>
+          
+          
+        </main>
+      
+        <main class="endpoint CreatePost">
+          <section class="description">
+            <h1>Create Post</h1>
             <p></p>
           </section>
           
@@ -95,13 +163,13 @@
               <tbody>
                 
                 <tr>
-                  <td><code>assetBase</code></td>
+                  <td><code>body</code></td>
                   <td><code>string</code></td>
                   <td></td>
                 </tr>
               
                 <tr>
-                  <td><code>assetQuote</code></td>
+                  <td><code>url</code></td>
                   <td><code>string</code></td>
                   <td></td>
                 </tr>
@@ -126,14 +194,43 @@
               <tbody>
                 
                 <tr>
-                  <td><code>rate</code></td>
-                  <td><code>float64</code></td>
+                  <td><code>id</code></td>
+                  <td><code>int</code></td>
                   <td></td>
                 </tr>
               
+              </tbody>
+            </table>
+            
+          </section>
+          
+          
+        </main>
+      
+        <main class="endpoint GetFeed">
+          <section class="description">
+            <h1>Get Feed</h1>
+            <p></p>
+          </section>
+          
+          
+          <section class="response">
+            <h2>Response</h2>
+            <p>Type Object</p>
+            
+            <table>
+              <thead>
                 <tr>
-                  <td><code>error</code></td>
-                  <td><code>string</code></td>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><code>posts</code></td>
+                  <td><code>Array</code></td>
                   <td></td>
                 </tr>
               

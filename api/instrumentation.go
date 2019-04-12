@@ -37,9 +37,9 @@ func NewInstrumentingMiddleware(a API, client *statsd.Client, log *logrus.Logger
 	}
 }
 
-func (im *instrumentingMiddleware) GetPrice(ctx context.Context, req GetPriceRequest) (*GetPriceResponse, error) {
+func (im *instrumentingMiddleware) Login(ctx context.Context, req LoginRequest) (*LoginResponse, error) {
 	var err error
-	methodTag := metrics.Tag{Key: "method", Value: "GetPrice"}
+	methodTag := metrics.Tag{Key: "method", Value: "Login"}
 	defer func(begin time.Time) {
 		if err != nil {
 			errorTag := metrics.Tag{Key: "error", Value: err.Error()}
@@ -48,6 +48,36 @@ func (im *instrumentingMiddleware) GetPrice(ctx context.Context, req GetPriceReq
 		im.requestCount.With(methodTag).Add(1)
 		im.requestLatency.With(methodTag).Observe(time.Since(begin))
 	}(time.Now())
-	response, err := im.a.GetPrice(ctx, req)
+	response, err := im.a.Login(ctx, req)
+	return response, err
+}
+
+func (im *instrumentingMiddleware) CreatePost(ctx context.Context, req CreatePostRequest) (*CreatePostResponse, error) {
+	var err error
+	methodTag := metrics.Tag{Key: "method", Value: "CreatePost"}
+	defer func(begin time.Time) {
+		if err != nil {
+			errorTag := metrics.Tag{Key: "error", Value: err.Error()}
+			im.errorCount.With(methodTag).With(errorTag).Add(1)
+		}
+		im.requestCount.With(methodTag).Add(1)
+		im.requestLatency.With(methodTag).Observe(time.Since(begin))
+	}(time.Now())
+	response, err := im.a.CreatePost(ctx, req)
+	return response, err
+}
+
+func (im *instrumentingMiddleware) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse, error) {
+	var err error
+	methodTag := metrics.Tag{Key: "method", Value: "GetFeed"}
+	defer func(begin time.Time) {
+		if err != nil {
+			errorTag := metrics.Tag{Key: "error", Value: err.Error()}
+			im.errorCount.With(methodTag).With(errorTag).Add(1)
+		}
+		im.requestCount.With(methodTag).Add(1)
+		im.requestLatency.With(methodTag).Observe(time.Since(begin))
+	}(time.Now())
+	response, err := im.a.GetFeed(ctx, req)
 	return response, err
 }

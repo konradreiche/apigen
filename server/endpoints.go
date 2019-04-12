@@ -13,8 +13,8 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-func (s *Server) GetPriceHandleFunc(w http.ResponseWriter, r *http.Request) {
-	var req api.GetPriceRequest
+func (s *Server) LoginHandleFunc(w http.ResponseWriter, r *http.Request) {
+	var req api.LoginRequest
 	params := mux.Vars(r)
 	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		TagName: "json",
@@ -33,7 +33,63 @@ func (s *Server) GetPriceHandleFunc(w http.ResponseWriter, r *http.Request) {
 		Encode(nil, w, nil, err)
 		return
 	}
-	resp, err := s.api.GetPrice(r.Context(), req)
+	resp, err := s.api.Login(r.Context(), req)
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	Encode(nil, w, resp, nil)
+}
+
+func (s *Server) CreatePostHandleFunc(w http.ResponseWriter, r *http.Request) {
+	var req api.CreatePostRequest
+	params := mux.Vars(r)
+	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName: "json",
+		Result:  &req,
+	})
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	err = dec.Decode(params)
+	if err != nil {
+		Encode(nil, w, nil, err)
+	}
+	err = req.Validate()
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	resp, err := s.api.CreatePost(r.Context(), req)
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	Encode(nil, w, resp, nil)
+}
+
+func (s *Server) GetFeedHandleFunc(w http.ResponseWriter, r *http.Request) {
+	var req api.GetFeedRequest
+	params := mux.Vars(r)
+	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName: "json",
+		Result:  &req,
+	})
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	err = dec.Decode(params)
+	if err != nil {
+		Encode(nil, w, nil, err)
+	}
+	err = req.Validate()
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	resp, err := s.api.GetFeed(r.Context(), req)
 	if err != nil {
 		Encode(nil, w, nil, err)
 		return
