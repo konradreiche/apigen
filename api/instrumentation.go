@@ -81,3 +81,18 @@ func (im *instrumentingMiddleware) GetFeed(ctx context.Context, req GetFeedReque
 	response, err := im.a.GetFeed(ctx, req)
 	return response, err
 }
+
+func (im *instrumentingMiddleware) FollowUser(ctx context.Context, req FollowUserRequest) (*FollowUserResponse, error) {
+	var err error
+	methodTag := metrics.Tag{Key: "method", Value: "FollowUser"}
+	defer func(begin time.Time) {
+		if err != nil {
+			errorTag := metrics.Tag{Key: "error", Value: err.Error()}
+			im.errorCount.With(methodTag).With(errorTag).Add(1)
+		}
+		im.requestCount.With(methodTag).Add(1)
+		im.requestLatency.With(methodTag).Observe(time.Since(begin))
+	}(time.Now())
+	response, err := im.a.FollowUser(ctx, req)
+	return response, err
+}

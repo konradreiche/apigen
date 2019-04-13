@@ -87,3 +87,23 @@ func (rm *recordingMiddleware) GetFeed(ctx context.Context, req GetFeedRequest) 
 	response, err := rm.a.GetFeed(ctx, req)
 	return response, err
 }
+
+func (rm *recordingMiddleware) FollowUser(ctx context.Context, req FollowUserRequest) (*FollowUserResponse, error) {
+	var err error
+	defer func() {
+		activity := &model.Activity{
+			Method: "FollowUser",
+		}
+		activity.Data, err = json.Marshal(req)
+		if err != nil {
+			rm.log.Error(err)
+			return
+		}
+		err = rm.store.SaveActivity(activity)
+		if err != nil {
+			rm.log.Error(err)
+		}
+	}()
+	response, err := rm.a.FollowUser(ctx, req)
+	return response, err
+}

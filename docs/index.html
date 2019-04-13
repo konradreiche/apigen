@@ -12,7 +12,6 @@
     <div class="header">
       <div class="brand">
         <img class="logo" src="logo.png" />
-        <img src="name.png" />
       </div>
       <div class="title">
         <a href="index.html">API Reference</a>
@@ -27,25 +26,28 @@
           <li><a class="link Login" href="#Login" data-target="Login">Login</a></li>
           <li><a class="link CreatePost" href="#CreatePost" data-target="CreatePost">Create Post</a></li>
           <li><a class="link GetFeed" href="#GetFeed" data-target="GetFeed">Get Feed</a></li>
+          <li><a class="link FollowUser" href="#FollowUser" data-target="FollowUser">Follow User</a></li>
         </ul>
       </aside>
       <main class="general selected">
         <section class="description">
           <h1>Introduction</h1>
-          <p>October uses a WebSocket API on the backend to communicate with mobile and web clients. WebSockets give us a bi-directional communication link making it easier to push messages directly to the client for updating the interface in real-time.</p>
+          <p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis finibus, urna eget vestibulum imperdiet, ante est placerat urna, at tincidunt urna tellus posuere erat. Sed non maximus odio. Nullam sagittis ex eu urna molestie viverra ut in lacus. Sed sit amet ex tincidunt magna condimentum pretium nec id lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque eu felis varius, pulvinar nunc eget, luctus lorem. Quisque et urna consectetur, dapibus leo vel, rhoncus nibh. Sed semper orci quis mollis dictum. Nunc pellentesque velit sit amet elementum mattis. Pellentesque tortor massa, auctor eu dolor vel, molestie egestas nisl.
+
+</p>
           <h2>Conventions</h2>
-          <p>Messages are send over the WebSocket connection in the form of JSON objects.</p>
+          <p>Vivamus quis pharetra quam. Maecenas ac enim eget lacus suscipit ornare.</p>
           <ul>
-            <li>Every message send to the API has to correspond to an endpoint.</li>
-            <li>Endpoints are identified via the <code>rpc</code> field.</li>
-            <li>Requests are uniquely identified by generating a UUID version 4 and setting the <code>requestID</code> field.</li>
-            <li>Responses will carry an <code>ack</code> field set to the previously generated UUID.</li>
-            <li>Payload for request or responses go into <code>data</code>.</li>
+            <li>Aliquam semper, nunc ultrices sollicitudin congue</li>
+            <li>tellus justo viverra nisi, elementum pharetra sapien tellus ac ex.</li>
+            <li>Etiam efficitur imperdiet viverra</li>
+            <li>Mauris nec purus at lacus sollicitudin pretium.</li>
           </ul>
           <h2>Example</h2>
           <pre><code class="language-json">// Request
 {
-  "rpc": "auth",
+  "method": "signup",
   "requestID": "a8372aaf-ae3d-4ccb-9ab7-054c31d0ec52",
   "data": {
     "username": "chad",
@@ -55,17 +57,15 @@
 
 // Response
 {
-  "rpc": "auth",
+  "method": "signup",
   "ack": "a8372aaf-ae3d-4ccb-9ab7-054c31d0ec52",
   "data": {
     "user": {
-      "nodeId": "bb100fc4-29b6-4e2f-b19c-549687b27125",
-      "displayname": "Chad Unicorn",
+      "id": "bb100fc4-29b6-4e2f-b19c-549687b27125",
+      "displayName": "Chad Unicorn",
       "firstName": "Chad",
       "lastName": "Unicorn",
-      "profileimg_path": "https://s3-us-west-2.amazonaws.com/assets.october.news/profiles/57f1c2fe-32a1-4b86-ab79-cc3c3e1425ef.jpeg",
-      "cover_image_path": "https://s3-us-west-2.amazonaws.com/assets.october.news/profiles/covers/4bc4db4e-6a0f-49b8-94c0-213c00ca7d47.jpeg",
-      "email": "chad@october.news",
+      "email": "chad@unicorn.com",
     },
     "session": {
       "id": "aa5706e4-baf8-4011-aad0-6d8d55730b8b",
@@ -73,8 +73,6 @@
     }
   }
 }</code></pre>
-          <h2>Authentication & Security</h2>
-          <p>We use stateful connections. When someone connects to the endpoint the connection is considered unauthenticated. Once an authentication request is send and it was successful, the connection becomes authenticated without the need to reconnect. If a client has cached the session ID of a user it can connect append the session ID as <code>sessionID=[id]</code> and the connection will be authenticated immediately.</p>
         </section>
       </main>
       
@@ -133,7 +131,8 @@
                 <tr>
                   <td><code>id</code></td>
                   <td><code>uuid.UUID</code></td>
-                  <td></td>
+                  <td>SessionID identifies the session cookie as UUID.
+</td>
                 </tr>
               
               </tbody>
@@ -142,12 +141,35 @@
           </section>
           
           
+            <section class="example">
+              <h2>Request Example</h2>
+              <p>Logging a user with username and password in.
+</p>
+              <pre><code class="language-json">{
+  &#34;rpc&#34;: &#34;login&#34;,
+  &#34;requestID&#34;: &#34;bd356487-7a89-443c-87c3-daa775c0114c&#34;,
+  &#34;data&#34;: {
+    &#34;username&#34;: &#34;chad&#34;,
+    &#34;password&#34;: &#34;secret&#34;
+  }
+}</code></pre>
+              <h2>Response Example</h2>
+              <pre><code class="language-json">{
+  &#34;rpc&#34;: &#34;login&#34;,
+  &#34;ack&#34;: &#34;bd356487-7a89-443c-87c3-daa775c0114c&#34;,
+  &#34;data&#34;: {
+    &#34;id&#34;: &#34;00000000-0000-0000-0000-000000000000&#34;
+  }
+}</code></pre>
+            </section>
+          
         </main>
       
         <main class="endpoint CreatePost">
           <section class="description">
             <h1>Create Post</h1>
-            <p></p>
+            <p>Creates a new post and enters it to th feeds of the users following the author.
+</p>
           </section>
           
           <section class="parameter">
@@ -165,13 +187,15 @@
                 <tr>
                   <td><code>body</code></td>
                   <td><code>string</code></td>
-                  <td></td>
+                  <td>Body is the post&#39;s content written in Markdown syntax.
+</td>
                 </tr>
               
                 <tr>
                   <td><code>url</code></td>
                   <td><code>string</code></td>
-                  <td></td>
+                  <td>URL associates the post with a link.
+</td>
                 </tr>
               
               </tbody>
@@ -196,7 +220,8 @@
                 <tr>
                   <td><code>id</code></td>
                   <td><code>int</code></td>
-                  <td></td>
+                  <td>ID identifies the newly created post.
+</td>
                 </tr>
               
               </tbody>
@@ -210,7 +235,38 @@
         <main class="endpoint GetFeed">
           <section class="description">
             <h1>Get Feed</h1>
-            <p></p>
+            <p>Retrieves the feed for the given user.
+</p>
+          </section>
+          
+          <section class="parameter">
+            <h2>Parameters</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><code>pageSize</code></td>
+                  <td><code>int</code></td>
+                  <td>PerPage specifies the number of posts returned per request.
+</td>
+                </tr>
+              
+                <tr>
+                  <td><code>pageNumber</code></td>
+                  <td><code>int</code></td>
+                  <td>Page for pagination; the page to retrieve.
+</td>
+                </tr>
+              
+              </tbody>
+            </table>
           </section>
           
           
@@ -231,13 +287,46 @@
                 <tr>
                   <td><code>posts</code></td>
                   <td><code>Array</code></td>
-                  <td></td>
+                  <td>Posts is the lists of all posts.
+</td>
                 </tr>
               
               </tbody>
             </table>
             
           </section>
+          
+          
+        </main>
+      
+        <main class="endpoint FollowUser">
+          <section class="description">
+            <h1>Follow User</h1>
+            <p></p>
+          </section>
+          
+          <section class="parameter">
+            <h2>Parameters</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><code>userID</code></td>
+                  <td><code>int</code></td>
+                  <td></td>
+                </tr>
+              
+              </tbody>
+            </table>
+          </section>
+          
           
           
         </main>

@@ -111,7 +111,6 @@ func (p *Parser) Parse() error {
 	ast.Inspect(p.file, func(n ast.Node) bool {
 		switch x := n.(type) {
 		case *ast.TypeSpec:
-			fmt.Println(x)
 			if err := p.parseType(x); err != nil {
 				return false
 			}
@@ -144,6 +143,7 @@ func (p *Parser) generate() error {
 }
 
 func (p *Parser) generateCode(tmpl *template.Template, fn string) error {
+	fmt.Printf("Generating %s\n", fn)
 	buf := bytes.NewBuffer([]byte{})
 	err := tmpl.Execute(buf, p)
 	if err != nil {
@@ -195,7 +195,6 @@ func (p *Parser) addResponseField(endpoint string, expr ast.Expr) {
 		response.Type = Object
 		response.Fields = make([]ResponseField, 0)
 		for _, field := range x.Fields.List {
-			fmt.Println(field)
 			responseField := ResponseField{
 				Description: field.Doc.Text(),
 				Field:       parseTag(field.Tag.Value),

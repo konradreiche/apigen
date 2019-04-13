@@ -21,14 +21,12 @@ nav {
 }
 
 .brand {
-  max-width: 230px;
-  min-width: 230px;
   align-items: center;
 }
 
 .title {
-  max-width: 840px;
-  min-width: 840px;
+  max-width: 590px;
+  min-width: 590px;
   font-size: 1.5rem;
 }
 
@@ -37,7 +35,7 @@ img {
 }
 
 .logo {
-  margin-right: 12px;
+  margin-right: 15px;
 }
 
 .wrapper {
@@ -135,5 +133,5 @@ main.selected {
 }
 
 a.selected {
-  color: #08b8fb;
+  color: #4a86c6;
 }

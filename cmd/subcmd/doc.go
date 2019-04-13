@@ -114,7 +114,7 @@ func (dg *DocGenerator) ParseExamples() error {
 			}
 
 			name := vs.Names[0].String()
-			re := regexp.MustCompile(`(.*)(Response)Example\d`)
+			re := regexp.MustCompile(`(.*)(Request|Response)Example\d`)
 			match := re.FindStringSubmatch(name)
 			if len(match) == 0 {
 				return true
@@ -266,7 +266,7 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	dg, err := NewDocGenerator(p, "../cmd/subcmd/examples.go")
+	dg, err := NewDocGenerator(p, "../api/examples.go")
 	if err != nil {
 		fail(err)
 	}

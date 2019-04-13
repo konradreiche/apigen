@@ -76,3 +76,21 @@ func (l *loggingMiddleware) GetFeed(ctx context.Context, req GetFeedRequest) (*G
 	resp, err := l.api.GetFeed(ctx, req)
 	return resp, err
 }
+
+func (l *loggingMiddleware) FollowUser(ctx context.Context, req FollowUserRequest) (*FollowUserResponse, error) {
+	var err error
+	defer func() {
+		fields := logrus.Fields{
+			"method":     "FollowUser",
+			"user_agent": ctx.Value("userAgent"),
+		}
+		if err == nil {
+			l.log.WithFields(fields).Info("request")
+		} else {
+			fields["error"] = err
+			l.log.WithFields(fields).Error("request failed")
+		}
+	}()
+	resp, err := l.api.FollowUser(ctx, req)
+	return resp, err
+}

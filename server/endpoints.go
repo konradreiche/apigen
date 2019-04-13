@@ -96,3 +96,31 @@ func (s *Server) GetFeedHandleFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	Encode(nil, w, resp, nil)
 }
+
+func (s *Server) FollowUserHandleFunc(w http.ResponseWriter, r *http.Request) {
+	var req api.FollowUserRequest
+	params := mux.Vars(r)
+	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		TagName: "json",
+		Result:  &req,
+	})
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	err = dec.Decode(params)
+	if err != nil {
+		Encode(nil, w, nil, err)
+	}
+	err = req.Validate()
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	resp, err := s.api.FollowUser(r.Context(), req)
+	if err != nil {
+		Encode(nil, w, nil, err)
+		return
+	}
+	Encode(nil, w, resp, nil)
+}
