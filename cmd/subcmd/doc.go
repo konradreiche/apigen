@@ -248,40 +248,27 @@ func bootstrapExamples(filename string) error {
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "examples" {
 		err := bootstrapExamples(os.Getenv("GOFILE"))
-		if err != nil {
-			fail(err)
-		}
+		check(err)
 		return
 	}
 
 	err := loadExamples()
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 	p, err := parser.NewParser("api.go")
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 	err = p.Parse()
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 	dg, err := NewDocGenerator(p, "../api/examples.go")
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 	err = dg.ParseExamples()
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 	err = dg.generate()
-	if err != nil {
-		fail(err)
-	}
+	check(err)
 
 }
 
-func fail(err error) {
-	fmt.Println(err)
-	os.Exit(1)
+func check(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
