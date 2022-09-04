@@ -24,7 +24,10 @@ func NewServer(api api.API) *Server {
 func (s *Server) Serve() {
 	router := mux.NewRouter()
 	router.Use(metadataMiddleware)
-	router.HandleFunc(api.GetPriceEndpoint, s.GetPriceHandleFunc).Methods("GET")
+	router.HandleFunc(api.LoginEndpoint, s.LoginHandleFunc).Methods("POST")
+	router.HandleFunc(api.CreatePostEndpoint, s.CreatePostHandleFunc).Methods("POST")
+	router.HandleFunc(api.GetFeedEndpoint, s.GetFeedHandleFunc).Methods("GET")
+	router.HandleFunc(api.FollowUserEndpoint, s.FollowUserHandleFunc).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 

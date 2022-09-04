@@ -38,10 +38,12 @@ func TestServer(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	client := client.NewClient("http://localhost:8080")
-	fmt.Println(client.GetPrice(context.Background(), api.GetPriceRequest{
-		AssetBase:  "USD",
-		AssetQuote: "BTC",
-	}))
+	if _, err := client.GetFeed(context.Background(), api.GetFeedRequest{
+		PerPage: 10,
+		Page:    0,
+	}); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func testClient() (*statsd.Client, error) {

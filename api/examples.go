@@ -1,7 +1,7 @@
 //go:generate go run ../cmd/subcmd/examples.go ../cmd/subcmd/doc.go examples
 package api
 
-import "github.com/gobuffalo/uuid"
+import "github.com/gofrs/uuid"
 
 // Logging a user with username and password in.
 var LoginRequestExample1 = LoginRequest{

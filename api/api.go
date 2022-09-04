@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 
-	"github.com/gobuffalo/uuid"
+	"github.com/gofrs/uuid"
 )
 
 const (
@@ -106,6 +106,10 @@ func (a *api) GetFeed(ctx context.Context, req GetFeedRequest) (*GetFeedResponse
 
 type FollowUserRequest struct {
 	UserID int `json:"userID"`
+}
+
+func (r *FollowUserRequest) Method() string {
+	return http.MethodGet
 }
 
 type FollowUserResponse struct {
