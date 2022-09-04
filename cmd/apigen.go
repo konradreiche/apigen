@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/konradreiche/apigen/parser"
@@ -10,15 +10,10 @@ import (
 func main() {
 	p, err := parser.NewParser(os.Getenv("GOFILE"))
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	err = p.Parse()
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
-}
-
-func fail(err error) {
-	fmt.Println(err)
-	os.Exit(1)
 }

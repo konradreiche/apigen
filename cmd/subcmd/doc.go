@@ -9,6 +9,7 @@ import (
 	"go/token"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -249,39 +250,34 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "examples" {
 		err := bootstrapExamples(os.Getenv("GOFILE"))
 		if err != nil {
-			fail(err)
+			log.Fatal(err)
 		}
 		return
 	}
 
 	err := loadExamples()
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	p, err := parser.NewParser("api.go")
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	err = p.Parse()
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	dg, err := NewDocGenerator(p, "../api/examples.go")
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	err = dg.ParseExamples()
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 	err = dg.generate()
 	if err != nil {
-		fail(err)
+		log.Fatal(err)
 	}
 
-}
-
-func fail(err error) {
-	fmt.Println(err)
-	os.Exit(1)
 }
